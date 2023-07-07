@@ -63,6 +63,13 @@
   grid-gap: 10px;
 }
 
+.two_raw {
+  display: grid;
+  grid-template-columns: 0.2fr 2.0fr;
+  grid-template-rows: 1fr;
+  grid-gap: 10px;
+}
+
 .box1 {
   grid-column: 1;
   grid-row: 1;
@@ -86,38 +93,37 @@
 
 .container {
   display: grid;
-  grid-template-columns: 30% 30% 40%;
-  grid-template-rows: 50% 50%;
+  grid-template-rows: 0.1fr 0.1fr 0.1fr;
+  grid-template-columns: 1fr 1fr;
   grid-gap: 5px;
 }
 
-.container text1{
+.container grid1{
   grid-column: 1;
   grid-row: 1;
 }
 
-.container text2{
+.container grid2{
   grid-column: 2;
   grid-row: 1;
 }
 
-.container text3{
+.container grid3{
   grid-column: 1;
   grid-row: 2;
 }
 
-.container text4{
+.container grid4{
   grid-column: 2;
   grid-row: 2;
 }
 
-.container select{
-  width: 100%;
-  grid-column: 3;
-  grid-row: 1;
+.select{
+  grid-column: 1;
+  grid-row: 3;
 }
 
-.container button{
-  grid-column: 3;
-  grid-row: 2;
+.button{
+  grid-column: 2;
+  grid-row: 3;
 }

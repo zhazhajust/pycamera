@@ -8,9 +8,16 @@ class Camera(object):
 		self.pFrameBuffer = 0
 		self.quit = False
 		#self.buffer = asyncio.Queue()
-		self.main()
+		#self.start()
 
-	def main(self):
+	def __del__(self):
+		# 关闭相机
+		mvsdk.CameraUnInit(self.hCamera)
+		# 释放帧缓存
+		mvsdk.CameraAlignFree(self.pFrameBuffer)
+		return
+
+	def start(self):
 		# 枚举相机
 		DevList = mvsdk.CameraEnumerateDevice()
 		nDev = len(DevList)
@@ -85,19 +92,9 @@ class Camera(object):
 	def get_frame(self):
 		hCamera = self.hCamera
 		pFrameBuffer = self.pFrameBuffer
+
+		# 从相机取一帧图片
 		pRawData, FrameHead = mvsdk.CameraGetImageBuffer(hCamera, 200)
-		'''
-		if len(self.stack)> 0:
-			self.stack.pop()
-			mvsdk.CameraSaveImage(hCamera, './raw_16', pRawData, FrameHead, mvsdk.FILE_RAW_16BIT, 100)
-			apiData = {
-				"width": 1280, #FrameHead.iWidth
-				"height": 960, #FrameHead.iHeight
-				"depth": "8bit" if self.isRawData else "12bit",
-				}
-			with open('./config.yml', 'w', encoding='utf-8') as f:
-				yaml.dump(data=apiData, stream=f, allow_unicode=True)
-		'''
 		mvsdk.CameraImageProcess(hCamera, pRawData, pFrameBuffer, FrameHead)
 		mvsdk.CameraReleaseImageBuffer(hCamera, pRawData)
 		
@@ -120,6 +117,12 @@ class Camera(object):
 							FrameHead.iWidth, 1)/2**4
 		frame = np.asarray(frame[::-1, :], dtype=np.uint16)
 		return frame
+
+	def CameraSetExposureTime(self, time: float):
+		mvsdk.CameraPause(self.hCamera)
+		mvsdk.CameraSetExposureTime(self.hCamera, time)
+		mvsdk.CameraPlay(self.hCamera)
+		return
 
 	######
 	async def run(self):
