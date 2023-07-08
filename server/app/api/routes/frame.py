@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic import BaseModel
 from fastapi import APIRouter, Body, Depends, Response, BackgroundTasks
 from fastapi.responses import StreamingResponse, ORJSONResponse
-from .Camera import Camera
+from app.core.Camera import Camera
 
 isAddFrame = False
 
