@@ -18,11 +18,12 @@ def get_camera() -> Camera:
     return camera
 
 def get_queue() -> asyncio.Queue:
-    return asyncio.Queue(20)
+    q = asyncio.Queue(20)
+    return q
 
-async def add_frame(q: asyncio.Queue, camera: Camera):
+def add_frame(q: asyncio.Queue, camera: Camera):
     while isAddFrame:
-        yield q.put(camera.get_frame())
+        q.append(camera.get_frame())
 
 class Item(BaseModel):
     name: str
@@ -97,11 +98,10 @@ def close(camera: Camera = Depends(get_camera)):
 
 @router.get("/start_sample")
 def start_sample(backgroundtasks: BackgroundTasks, 
-                 q: asyncio.Queue = Depends(get_queue),
                  camera: Camera = Depends(get_camera)):
     global isAddFrame
     isAddFrame = True
-    #backgroundtasks.add_task(add_frame, q, camera)
+    backgroundtasks.add_task(add_frame, camera.buffer, camera)
     return
 
 @router.get("/stop_sample")
